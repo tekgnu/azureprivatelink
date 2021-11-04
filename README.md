@@ -8,32 +8,31 @@ If you are not familiar with the service and why it is critical to securing (the
 ### DNS
 One of the biggest barriers to implementation is in understanding how DNS gets implemented to support Private Endpoints.  My recommendation is to review Daniel Mauser's repo on PrivateLink here - [Daniel Mausers Github Repo on Privatelink](https://github.com/dmauser/PrivateLink/blob/master/README.md).  This repository is extensive and covers the different DNS patterns that are not clear from the Azure docs.  I wanted to address one specific scenario by taking a deeper look at a common design pattern: **On Premise DNS forwarding traffic to Azure.  See [here ](https://github.com/dmauser/PrivateLink/tree/master/DNS-Integration-Scenarios#4-on-premises-dns-integration) for a better understanding of how this resolution works (and helps keep the communication secured between the requestor and the Endpoint).  Specifically my client had the following requirements:
 - Enable on premise resources to be able to leverage Azure Private Link
-- Maintain Azure DNS in Azure (using MS DNS - but this could just as well be Bind or > [!TIP]
+- Maintain Azure DNS in Azure (using MS DNS - but this could just as well be Bind or 
 > Optional information to help a user be more successfulAzure Private DNS Zones (recommended))
 - Enable on premise resources to be able to leverage Azure Private Link (in this case Azure Backup)
 - Be able to resolve Private Endpoints without traversing the Internet
 - Minimize administration for the onpremise Bind team
 
 Diagram (for what was built)
-    :::image type="content" source="Az_PL_DNS_Config.png" alt-text="Example DNS query flow diagram for Azure Private Link.":::
-This aligns with Daniels drawing from DNS Integration Scenario 4, the one comment to make here is that his Note on Bind, > [!NOTE]
+    !["Example DNS query flow diagram for Azure Private Link."][Az_PL_DNS_Config.png"]
+This aligns with Daniels drawing from DNS Integration Scenario 4, the one comment to make here is that his Note on Bind 
 > There are reports that BIND-based DNS Servers (including Infoblox) work using conditional forwarders towards the privatelink.PaaS-domain zone (example: privatelink.blob.core.windows.net for storage accounts) without any issues. 
 Appears to not be an issue with this approach for Bind 9.
 
 Steps to set up the resolution:
 1. Network connectivity - DNS is by design minimal traffice, that being said there is definitily a consideration for security here.  Scope and accessibility must be considered in the architecture to minimize bad actors from accessing enterprise services 
 2. Assuming that the Bind servers are configured (version 9+) and permitted to communicate across port 53 into the Azure DNS (more on that in a moment).  This can be tested from a bind server by performing a simple: `dig @{IP_ADDRESS_FOR_AZURE_DNS} known_host` Watch for a connectivity error like "connection timed out; no servers could be reached"
-3. Offload the management on the bind servers by creating a forward lookup zone for core.windows.net.  > [!CAUTION]
+3. Offload the management on the bind servers by creating a forward lookup zone for core.windows.net.  
     > This zone is important because creating at a higher level domain (i.e. windows.net) will cause issues for DNS users/services that are trying to get to common services such as https://dotnet.microsoft.com/
     Using core.windows.net covers the following FQDN Endpoint for the following services:
-        blob.core.windows.net
-        dfs.core.windows.net
-        file.core.windows.net
-        queue.core.windows.net
-        table.core.windows.net
-        web.core.windows.net
-        database.windows.net
-    > [!CAUTION]
+        - blob.core.windows.net
+        - dfs.core.windows.net
+        - file.core.windows.net
+        - queue.core.windows.net
+        - table.core.windows.net
+        - web.core.windows.net
+        - database.windows.net
     > This is not the complete list of services and may require creating individual zone forwarders for services that are NOT included in this list, such as mongo.cosmos.azure.com
     Create entry in Binds - /etc/bind/named.conf.local:
     
