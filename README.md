@@ -24,17 +24,16 @@ Steps to set up the resolution:
 2. Assuming that the Bind servers are configured (version 9+) and permitted to communicate across port 53 into the Azure DNS (more on that in a moment).  This can be tested from a bind server by performing a simple: `dig @{IP_ADDRESS_FOR_AZURE_DNS} known_host` Watch for a connectivity error like "connection timed out; no servers could be reached"
 3. Offload the management on the bind servers by creating a forward lookup zone for core.windows.net.  
     
-    :lock:  **This zone is important because creating at a higher level domain (i.e. windows.net) will cause issues for DNS users/services that are trying to get to common services such as https://dotnet.microsoft.com/**
+    :lock:  **This zone is important because creating at a higher level domain (i.e. windows.net) will cause issues for DNS users/services that are trying to get to common services such as https://dotnet.microsoft.com/ .**
 
-    Using *core.windows.net* covers the following FQDN Endpoint for the following services:
-
-       + blob.core.windows.net
-       + dfs.core.windows.net
-       + file.core.windows.net
-       + queue.core.windows.net
-       + table.core.windows.net
-       + web.core.windows.net
-       + database.windows.net
+Using *core.windows.net* covers the following FQDN Endpoint for the following services:
+- blob.core.windows.net
+- dfs.core.windows.net
+- file.core.windows.net
+- queue.core.windows.net
+- table.core.windows.net
+- web.core.windows.net
+- database.windows.net
 
 *This is not the complete list of services and may require creating individual zone forwarders for services that are NOT included in this list, such as mongo.cosmos.azure.com*
 
