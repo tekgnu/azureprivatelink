@@ -15,7 +15,7 @@ One of the biggest barriers to implementation is in understanding how DNS gets i
 - Minimize administration for the onpremise Bind team
 
 Diagram (for what was built)
-    !["Example DNS query flow diagram for Azure Private Link."][Az_PL_DNS_Config.png"]
+    ![Example DNS query flow diagram for Azure Private Link.][Az_PL_DNS_Config.png]
 This aligns with Daniels drawing from DNS Integration Scenario 4, the one comment to make here is that his Note on Bind 
 > There are reports that BIND-based DNS Servers (including Infoblox) work using conditional forwarders towards the privatelink.PaaS-domain zone (example: privatelink.blob.core.windows.net for storage accounts) without any issues. 
 Appears to not be an issue with this approach for Bind 9.
