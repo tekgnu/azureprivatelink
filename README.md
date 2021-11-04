@@ -1,11 +1,11 @@
-﻿****Azure Private Link integration Repository
+﻿#Azure Private Link integration Repository**
 
 This repository is meant as a culmination of notes and practices that I have leveraged to help support enterprise customers leverage the Azure Private Link Service.  I will be adding collateral as it fits but wanted to focus more on implemenation and operationalization of the Azure service.
 If you are not familiar with the service and why it is critical to securing (the more East - West traffice), please see the Microsoft documents here - [https://aka.ms/privatelink](https://aka.ms/privatelink)
 
-***Implementation
+##Implementation
 
-**DNS
+###DNS
 One of the biggest barriers to implementation is in understanding how DNS gets implemented to support Private Endpoints.  My recommendation is to review Daniel Mauser's repo on PrivateLink here - [Daniel Mausers Github Repo on Privatelink](https://github.com/dmauser/PrivateLink/blob/master/README.md).  This repository is extensive and covers the different DNS patterns that are not clear from the Azure docs.  I wanted to address one specific scenario by taking a deeper look at a common design pattern: **On Premise DNS forwarding traffic to Azure.  See [here ](https://github.com/dmauser/PrivateLink/tree/master/DNS-Integration-Scenarios#4-on-premises-dns-integration) for a better understanding of how this resolution works (and helps keep the communication secured between the requestor and the Endpoint).  Specifically my client had the following requirements:
 - Enable on premise resources to be able to leverage Azure Private Link
 - Maintain Azure DNS in Azure (using MS DNS - but this could just as well be Bind or > [!TIP]
@@ -26,13 +26,13 @@ Steps to set up the resolution:
 3. Offload the management on the bind servers by creating a forward lookup zone for core.windows.net.  > [!CAUTION]
 > This zone is important because creating at a higher level domain (i.e. windows.net) will cause issues for DNS users/services that are trying to get to common services such as https://dotnet.microsoft.com/
 Using core.windows.net covers the following FQDN Endpoint for the following services:
-blob.core.windows.net
-dfs.core.windows.net
-file.core.windows.net
-queue.core.windows.net
-table.core.windows.net
-web.core.windows.net
-database.windows.net
+    blob.core.windows.net
+    dfs.core.windows.net
+    file.core.windows.net
+    queue.core.windows.net
+    table.core.windows.net
+    web.core.windows.net
+    database.windows.net
 > [!CAUTION]
 > This is not the complete list of services and may require creating individual zone forwarders for services that are NOT included in this list, such as mongo.cosmos.azure.com
 Create entry in Binds - /etc/bind/named.conf.local:
