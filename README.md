@@ -26,7 +26,8 @@ Steps to set up the resolution:
     
     :lock:  **This zone is important because creating at a higher level domain (i.e. windows.net) will cause issues for DNS users/services that are trying to get to common services such as https://dotnet.microsoft.com/**
 
-    Using core.windows.net covers the following FQDN Endpoint for the following services:
+    Using *core.windows.net* covers the following FQDN Endpoint for the following services:
+
        + blob.core.windows.net
        + dfs.core.windows.net
        + file.core.windows.net
@@ -34,8 +35,8 @@ Steps to set up the resolution:
        + table.core.windows.net
        + web.core.windows.net
        + database.windows.net
-    :scissors: 
-    *This is not the complete list of services and may require creating individual zone forwarders for services that are NOT included in this list, such as mongo.cosmos.azure.com*
+
+*This is not the complete list of services and may require creating individual zone forwarders for services that are NOT included in this list, such as mongo.cosmos.azure.com*
 
     Create the entry on the Bind server - **/etc/bind/named.conf.local:**
     
