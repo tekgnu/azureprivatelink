@@ -1,4 +1,4 @@
-﻿# Azure Private Link integration Repository
+﻿# Azure Private Link Integration
 
 This repository is meant as a culmination of notes and practices that I have leveraged to help support enterprise customers leverage the Azure Private Link Service.  I will be adding collateral as it fits but wanted to focus more on implemenation and operationalization of the Azure service.
 If you are not familiar with the service and why it is critical to securing (the more East - West traffice), please see the Microsoft documents here - [https://aka.ms/privatelink](https://aka.ms/privatelink)
